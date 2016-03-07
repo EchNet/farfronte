@@ -9,7 +9,16 @@ description = """API Server Middleware"""
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-
+task fatJar(type: Jar) {
+  manifest {
+    attributes "Implementation-Title": "Far Fronte",
+      "Implementation-Version": version,
+      "Main-Class": "net.ech.farfronte.DiscardServer"
+  }
+  baseName = project.name + "-all"
+  from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+  with jar
+}
 
 repositories {
         

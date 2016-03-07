@@ -22,12 +22,12 @@ public class DiscardServer {
   }
 
   public void run() throws Exception {
-    EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
+    EventLoopGroup bossGroup = new NioEventLoopGroup();
     EventLoopGroup workerGroup = new NioEventLoopGroup();
     try {
-      ServerBootstrap b = new ServerBootstrap(); // (2)
+      ServerBootstrap b = new ServerBootstrap();
       b.group(bossGroup, workerGroup)
-       .channel(NioServerSocketChannel.class) // (3)
+       .channel(NioServerSocketChannel.class)
        .childHandler(new ChannelInitializer<SocketChannel>() { // (4)
            @Override
            public void initChannel(SocketChannel ch) throws Exception {
@@ -57,6 +57,7 @@ public class DiscardServer {
     } else {
       port = 9090;
     }
+    System.out.println("Server listening on port " + port);
     new DiscardServer(port).run();
   }
 }
