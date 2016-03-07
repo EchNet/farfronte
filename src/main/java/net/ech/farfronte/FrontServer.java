@@ -13,11 +13,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 /**
  * Handles a server-side channel.
  */
-public class DiscardServer {
+public class FrontServer {
 
   private int port;
 
-  public DiscardServer(int port) {
+  public FrontServer(int port) {
     this.port = port;
   }
 
@@ -31,7 +31,7 @@ public class DiscardServer {
        .childHandler(new ChannelInitializer<SocketChannel>() { // (4)
            @Override
            public void initChannel(SocketChannel ch) throws Exception {
-               ch.pipeline().addLast(new DiscardServerHandler());
+               ch.pipeline().addLast(new FrontServerHandler());
            }
        })
        .option(ChannelOption.SO_BACKLOG, 128)          // (5)
@@ -58,6 +58,6 @@ public class DiscardServer {
       port = 9090;
     }
     System.out.println("Server listening on port " + port);
-    new DiscardServer(port).run();
+    new FrontServer(port).run();
   }
 }
