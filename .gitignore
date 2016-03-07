@@ -1,6 +1,5 @@
 .gradle
 build/
-target/
 *.swp
 
 # Ignore Gradle GUI config
