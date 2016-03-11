@@ -1,7 +1,6 @@
 package net.ech.farfronte;
 
 import io.netty.bootstrap.ServerBootstrap;
-
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -25,38 +24,23 @@ public class FrontServer {
     EventLoopGroup bossGroup = new NioEventLoopGroup();
     EventLoopGroup workerGroup = new NioEventLoopGroup();
     try {
-      ServerBootstrap b = new ServerBootstrap();
-      b.group(bossGroup, workerGroup)
+      new ServerBootstrap()
+       .group(bossGroup, workerGroup)
        .channel(NioServerSocketChannel.class)
-       .childHandler(new ChannelInitializer<SocketChannel>() { // (4)
-           @Override
-           public void initChannel(SocketChannel ch) throws Exception {
-               ch.pipeline().addLast(new FrontServerHandler());
-           }
-       })
-       .option(ChannelOption.SO_BACKLOG, 128)          // (5)
-       .childOption(ChannelOption.SO_KEEPALIVE, true); // (6)
-
-      // Bind and start to accept incoming connections.
-      ChannelFuture f = b.bind(port).sync(); // (7)
-
-      // Wait until the server socket is closed.
-      // In this example, this does not happen, but you can do that to gracefully
-      // shut down your server.
-      f.channel().closeFuture().sync();
-    } finally {
+       .option(ChannelOption.SO_BACKLOG, 128)          // make this configurable
+       .childOption(ChannelOption.SO_KEEPALIVE, true)  // and this
+       .childHandler(new FrontServerInitializer()) 
+       .bind(port)
+         .sync().channel().closeFuture().sync();
+    }
+    finally {
       workerGroup.shutdownGracefully();
       bossGroup.shutdownGracefully();
     }
   }
 
   public static void main(String[] args) throws Exception {
-    int port;
-    if (args.length > 0) {
-      port = Integer.parseInt(args[0]);
-    } else {
-      port = 9090;
-    }
+    int port = Integer.parseInt(System.getProperty("port", "9090"));
     System.out.println("Server listening on port " + port);
     new FrontServer(port).run();
   }
